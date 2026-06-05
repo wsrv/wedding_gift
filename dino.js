@@ -28,8 +28,6 @@ export function setupDino() {
   dinoElem.classList.remove("dino-finish");
   setCustomProperty(dinoElem, "--left", DINO_START_LEFT);
   setCustomProperty(dinoElem, "--bottom", 0);
-  document.removeEventListener("keydown", onJump);
-  document.addEventListener("keydown", onJump);
 }
 
 export function updateDino(delta, speedScale) {
@@ -53,12 +51,18 @@ export function setDinoFinish() {
 }
 
 export function stopDino() {
-  document.removeEventListener("keydown", onJump);
+  return;
 }
 
 export function startDinoFinishRun() {
   isFinishingRun = true;
-  document.removeEventListener("keydown", onJump);
+}
+
+export function requestJump() {
+  if (isJumping || isFinishingRun) return;
+
+  yVelocity = JUMP_SPEED;
+  isJumping = true;
 }
 
 function handleRun(delta, speedScale) {
@@ -96,11 +100,4 @@ function handleFinishRun(delta) {
   if (!isFinishingRun) return;
 
   incrementCustomProperty(dinoElem, "--left", delta * FINISH_RUN_SPEED);
-}
-
-function onJump(e) {
-  if (e.code !== "Space" || isJumping) return;
-
-  yVelocity = JUMP_SPEED;
-  isJumping = true;
 }

@@ -6,13 +6,16 @@ import {
   setDinoLose,
   setDinoFinish,
   startDinoFinishRun,
+  requestJump,
   stopDino,
 } from "./dino.js";
 import {
   updateCactus,
   setupCactus,
   getCactusRects,
+  getHeartRects,
   collectHearts,
+  clearHearts,
 } from "./cactus.js";
 import {
   advanceFinishTimer,
@@ -31,15 +34,19 @@ const SPEED_SCALE_INCREASE = 0.00001;
 
 const worldElem = document.querySelector("[data-world]");
 const startScreenElem = document.querySelector("[data-start-screen]");
+const loseScreenElem = document.querySelector("[data-lose-screen]");
 const finishScreenElem = document.querySelector("[data-finish-screen]");
 
 setPixelToWorldScale();
 window.addEventListener("resize", setPixelToWorldScale);
-document.addEventListener("keydown", handleStart, { once: true });
+document.addEventListener("keydown", handlePrimaryInput);
+document.addEventListener("pointerdown", handlePrimaryInput, { passive: false });
+loseScreenElem.addEventListener("click", handleStart);
 finishScreenElem.addEventListener("click", handleStart);
 
 let lastTime;
 let speedScale;
+let gameState = "idle";
 let isGameFinished;
 let hasStartedFinishRun;
 let isGroundStopped;
@@ -62,7 +69,12 @@ function update(time) {
     getFinishTimerElapsed(),
   );
   collectHearts(getDinoRect());
-  updateFinishPoint(delta, speedScale, getCactusRects().length > 0);
+  if (isFinishSequencePending()) clearHearts();
+  updateFinishPoint(
+    delta,
+    speedScale,
+    getCactusRects().length > 0 || getHeartRects().length > 0,
+  );
   updateFinishSequence();
   updateSpeedScale(delta);
   if (checkFinish()) return handleFinish();
@@ -70,6 +82,20 @@ function update(time) {
 
   lastTime = time;
   window.requestAnimationFrame(update);
+}
+
+function handlePrimaryInput(event) {
+  if (event.type === "keydown" && event.repeat) return;
+  if (event.type === "pointerdown") event.preventDefault();
+
+  if (gameState === "idle") {
+    handleStart();
+    return;
+  }
+
+  if (gameState === "running") {
+    requestJump();
+  }
 }
 
 function checkFinish() {
@@ -101,9 +127,11 @@ function updateSpeedScale(delta) {
 function handleStart() {
   lastTime = null;
   speedScale = 1;
+  gameState = "running";
   isGameFinished = false;
   hasStartedFinishRun = false;
   isGroundStopped = false;
+  loseScreenElem.classList.add("hide");
   finishScreenElem.classList.add("hide");
   setupGround();
   setupDino();
@@ -114,18 +142,17 @@ function handleStart() {
 }
 
 function handleLose() {
+  gameState = "lost";
   stopDino();
   setDinoLose();
-  setTimeout(() => {
-    document.addEventListener("keydown", handleStart, { once: true });
-    startScreenElem.classList.remove("hide");
-  }, 100);
+  loseScreenElem.classList.remove("hide");
 }
 
 function handleFinish() {
   if (isGameFinished) return;
 
   isGameFinished = true;
+  gameState = "finished";
   stopDino();
   removeFinishPoint();
   setDinoFinish();

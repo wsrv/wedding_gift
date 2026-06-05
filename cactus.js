@@ -84,6 +84,12 @@ export function collectHearts(dinoRect) {
   return collectedCount;
 }
 
+export function clearHearts() {
+  document.querySelectorAll("[data-heart]").forEach((heart) => {
+    heart.remove();
+  });
+}
+
 function createSpawn(finishTimerElapsed) {
   spawnCount += 1;
 
