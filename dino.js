@@ -6,11 +6,16 @@ import {
 
 const dinoElem = document.querySelector("[data-dino]");
 const JUMP_SPEED = 0.45;
+const MOBILE_JUMP_SPEED = 0.255;
 const GRAVITY = 0.0015;
+const MOBILE_GRAVITY = 0.001;
 const DINO_FRAME_COUNT = 2;
 const FRAME_TIME = 100;
 const DINO_START_LEFT = 1;
+const MOBILE_DINO_START_LEFT = 3;
 const FINISH_RUN_SPEED = 0.03;
+const MOBILE_FINISH_RUN_SPEED = 0.08;
+const MOBILE_BREAKPOINT = 700;
 
 let isJumping;
 let dinoFrame;
@@ -26,7 +31,7 @@ export function setupDino() {
   dinoElem.src = "imgs/dino-stationary.png";
   dinoElem.classList.add("dino-start");
   dinoElem.classList.remove("dino-finish");
-  setCustomProperty(dinoElem, "--left", DINO_START_LEFT);
+  setCustomProperty(dinoElem, "--left", getDinoStartLeft());
   setCustomProperty(dinoElem, "--bottom", 0);
 }
 
@@ -61,7 +66,7 @@ export function startDinoFinishRun() {
 export function requestJump() {
   if (isJumping || isFinishingRun) return;
 
-  yVelocity = JUMP_SPEED;
+  yVelocity = getJumpSpeed();
   isJumping = true;
 }
 
@@ -93,11 +98,31 @@ function handleJump(delta) {
     isJumping = false;
   }
 
-  yVelocity -= GRAVITY * delta;
+  yVelocity -= getGravity() * delta;
 }
 
 function handleFinishRun(delta) {
   if (!isFinishingRun) return;
 
-  incrementCustomProperty(dinoElem, "--left", delta * FINISH_RUN_SPEED);
+  incrementCustomProperty(dinoElem, "--left", delta * getFinishRunSpeed());
+}
+
+function getJumpSpeed() {
+  return window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_JUMP_SPEED : JUMP_SPEED;
+}
+
+function getGravity() {
+  return window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_GRAVITY : GRAVITY;
+}
+
+function getFinishRunSpeed() {
+  return window.innerWidth <= MOBILE_BREAKPOINT
+    ? MOBILE_FINISH_RUN_SPEED
+    : FINISH_RUN_SPEED;
+}
+
+function getDinoStartLeft() {
+  return window.innerWidth <= MOBILE_BREAKPOINT
+    ? MOBILE_DINO_START_LEFT
+    : DINO_START_LEFT;
 }

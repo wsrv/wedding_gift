@@ -5,8 +5,11 @@ import {
 } from "./updateCustomProperty.js";
 
 const SPEED = 0.05;
-const CACTUS_INTERVAL_MIN = 500;
-const CACTUS_INTERVAL_MAX = 2000;
+const MOBILE_BREAKPOINT = 700;
+const MOBILE_SCROLL_MULTIPLIER = 1.5;
+const CACTUS_INTERVAL_MIN = 700;
+const CACTUS_INTERVAL_MAX = 2100;
+const MOBILE_INTERVAL_MULTIPLIER = 1.35;
 const HEART_CHANCE = 0.35;
 const MIN_HEART_SPAWNS = 3;
 const HEART_RESCUE_START = 5000;
@@ -16,7 +19,7 @@ let nextCactusTime;
 let heartSpawnCount;
 let spawnCount;
 export function setupCactus() {
-  nextCactusTime = CACTUS_INTERVAL_MIN;
+  nextCactusTime = getSpawnIntervalMin();
   heartSpawnCount = 0;
   spawnCount = 0;
   document.querySelectorAll("[data-cactus], [data-heart]").forEach((elem) => {
@@ -31,7 +34,11 @@ export function updateCactus(
   finishTimerElapsed = 0,
 ) {
   document.querySelectorAll("[data-cactus], [data-heart]").forEach((elem) => {
-    incrementCustomProperty(elem, "--left", delta * speedScale * SPEED * -1);
+    incrementCustomProperty(
+      elem,
+      "--left",
+      delta * speedScale * SPEED * getScrollMultiplier() * -1,
+    );
     if (getCustomProperty(elem, "--left") <= -100) {
       elem.remove();
     }
@@ -41,7 +48,7 @@ export function updateCactus(
     if (pauseSpawning) return;
     createSpawn(finishTimerElapsed);
     nextCactusTime =
-      randomNumberBetween(CACTUS_INTERVAL_MIN, CACTUS_INTERVAL_MAX) /
+      randomNumberBetween(getSpawnIntervalMin(), getSpawnIntervalMax()) /
       speedScale;
   }
   nextCactusTime -= delta;
@@ -148,4 +155,22 @@ function isCollision(rect1, rect2) {
 
 function randomNumberBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function getScrollMultiplier() {
+  return window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_SCROLL_MULTIPLIER : 1;
+}
+
+function getSpawnIntervalMin() {
+  return Math.round(
+    CACTUS_INTERVAL_MIN *
+      (window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_INTERVAL_MULTIPLIER : 1),
+  );
+}
+
+function getSpawnIntervalMax() {
+  return Math.round(
+    CACTUS_INTERVAL_MAX *
+      (window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_INTERVAL_MULTIPLIER : 1),
+  );
 }

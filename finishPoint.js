@@ -6,6 +6,8 @@ import {
 
 const SPEED = 0.05;
 const FINISH_DELAY = 10000;
+const MOBILE_BREAKPOINT = 700;
+const MOBILE_SCROLL_MULTIPLIER = 1.5;
 const worldElem = document.querySelector("[data-world]");
 
 let finishPointElem;
@@ -33,7 +35,6 @@ export function advanceFinishTimer(delta) {
 }
 
 export function updateFinishPoint(delta, speedScale, hasCactiOnScreen) {
-
   if (isPending && !hasSpawned && !hasCactiOnScreen) {
     createFinishPoint();
     hasSpawned = true;
@@ -46,7 +47,7 @@ export function updateFinishPoint(delta, speedScale, hasCactiOnScreen) {
   incrementCustomProperty(
     finishPointElem,
     "--left",
-    delta * speedScale * SPEED * -1,
+    delta * speedScale * SPEED * getScrollMultiplier() * -1,
   );
 
   if (getFinishPointCenterX() <= getWorldCenterX()) {
@@ -95,5 +96,10 @@ function getFinishPointCenterX() {
 
 function getWorldCenterX() {
   const rect = worldElem.getBoundingClientRect();
-  return rect.left + rect.width / 2;
+  const visibleWidth = Math.min(rect.width, window.innerWidth);
+  return rect.left + visibleWidth / 2;
+}
+
+function getScrollMultiplier() {
+  return window.innerWidth <= MOBILE_BREAKPOINT ? MOBILE_SCROLL_MULTIPLIER : 1;
 }

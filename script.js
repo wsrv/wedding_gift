@@ -28,8 +28,10 @@ import {
   removeFinishPoint,
 } from "./finishPoint.js";
 
-const WORLD_WIDTH = 100;
 const WORLD_HEIGHT = 30;
+const WORLD_WIDTH_DESKTOP = 100;
+const WORLD_WIDTH_MOBILE = 100;
+const MOBILE_BREAKPOINT = 700;
 const SPEED_SCALE_INCREASE = 0.00001;
 
 const worldElem = document.querySelector("[data-world]");
@@ -169,13 +171,27 @@ function updateFinishSequence() {
 }
 
 function setPixelToWorldScale() {
+  if (window.innerWidth <= MOBILE_BREAKPOINT) {
+    const worldToPixelScale = window.innerHeight / WORLD_HEIGHT;
+    worldElem.style.width = `${WORLD_WIDTH_DESKTOP * worldToPixelScale}px`;
+    worldElem.style.height = `${WORLD_HEIGHT * worldToPixelScale}px`;
+    return;
+  }
+
+  const worldWidth = getWorldWidth();
   let worldToPixelScale;
-  if (window.innerWidth / window.innerHeight < WORLD_WIDTH / WORLD_HEIGHT) {
-    worldToPixelScale = window.innerWidth / WORLD_WIDTH;
+  if (window.innerWidth / window.innerHeight < worldWidth / WORLD_HEIGHT) {
+    worldToPixelScale = window.innerWidth / worldWidth;
   } else {
     worldToPixelScale = window.innerHeight / WORLD_HEIGHT;
   }
 
-  worldElem.style.width = `${WORLD_WIDTH * worldToPixelScale}px`;
+  worldElem.style.width = `${worldWidth * worldToPixelScale}px`;
   worldElem.style.height = `${WORLD_HEIGHT * worldToPixelScale}px`;
+}
+
+function getWorldWidth() {
+  return window.innerWidth <= MOBILE_BREAKPOINT
+    ? WORLD_WIDTH_MOBILE
+    : WORLD_WIDTH_DESKTOP;
 }
