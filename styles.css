@@ -1,0 +1,201 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.world {
+  overflow: hidden;
+  position: relative;
+  padding-top: 12vmin;
+  margin-top: -12vmin;
+  --dino-start-height: 50%;
+  --dino-run-height: calc(var(--dino-start-height) * 1000 / 1080);
+  --finish-point-height: calc(var(--dino-start-height) * 845 / 1080);
+}
+
+.start-screen {
+  position: absolute;
+  font-size: 5vmin;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.finish-screen {
+  position: absolute;
+  top: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(720px, calc(100% - 1.6rem));
+  min-height: 5.5rem;
+  z-index: 10;
+  border: 1px solid rgba(178, 90, 115, 0.22);
+  border-radius: 24px;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b223d;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 250, 248, 0.96) 0%,
+      rgba(255, 239, 243, 0.92) 100%
+    );
+  box-shadow:
+    0 10px 28px rgba(110, 33, 61, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  overflow: hidden;
+}
+
+.finish-screen::before,
+.finish-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.finish-screen::before {
+  background:
+    radial-gradient(circle at 10% 50%, rgba(178, 90, 115, 0.16) 0 2px, transparent 3px),
+    radial-gradient(circle at 90% 50%, rgba(178, 90, 115, 0.16) 0 2px, transparent 3px);
+  opacity: 1;
+}
+
+.finish-screen::after {
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(178, 90, 115, 0.18) 18%,
+      rgba(178, 90, 115, 0.18) 82%,
+      transparent
+    );
+  height: 1px;
+  top: auto;
+  bottom: 0.55rem;
+  opacity: 1;
+}
+
+.finish-screen__title {
+  position: relative;
+  z-index: 1;
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+  font-size: clamp(1.8rem, 4.3vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.75),
+    0 6px 16px rgba(110, 33, 61, 0.14);
+  animation: title-pulse 4s ease-in-out infinite;
+}
+
+.finish-screen__title::after {
+  content: "";
+  display: block;
+  width: min(20vw, 160px);
+  height: 1px;
+  margin: 0.45rem auto 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(178, 90, 115, 0.75) 25%,
+    rgba(178, 90, 115, 0.75) 75%,
+    transparent
+  );
+  box-shadow: 0 0 10px rgba(178, 90, 115, 0.18);
+}
+
+.finish-screen:hover .finish-screen__title {
+  transform: scale(1.02);
+}
+
+.hide {
+  display: none;
+}
+
+.ground {
+  --left: 0;
+  position: absolute;
+  width: 300%;
+  bottom: 0;
+  left: calc(var(--left) * 1%);
+}
+
+.dino {
+  --left: 1;
+  --bottom: 0;
+  position: absolute;
+  left: calc(var(--left) * 1%);
+  height: var(--dino-run-height);
+  bottom: calc(var(--bottom) * 1%);
+}
+
+.dino-start {
+  height: var(--dino-start-height);
+}
+
+.dino-finish {
+  height: var(--dino-start-height);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.cactus {
+  position: absolute;
+  left: calc(var(--left) * 1%);
+  height: 20%;
+  bottom: 0;
+}
+
+.heart {
+  --left: 0;
+  position: absolute;
+  left: calc(var(--left) * 1%);
+  top: 22%;
+  height: 14%;
+}
+
+.finish-point {
+  --left: 0;
+  position: absolute;
+  left: calc(var(--left) * 1%);
+  height: var(--finish-point-height);
+  bottom: 0;
+}
+
+@keyframes title-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.04);
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes sparkle-drift {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-40px);
+  }
+}
