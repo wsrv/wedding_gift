@@ -13,6 +13,8 @@ const MOBILE_INTERVAL_MULTIPLIER = 1.35;
 const HEART_CHANCE = 0.35;
 const MIN_HEART_SPAWNS = 3;
 const HEART_RESCUE_START = 5000;
+const CACTUS_SRC = new URL("./imgs/cactus.png", import.meta.url).href;
+const HEART_SRC = new URL("./imgs/heart.png", import.meta.url).href;
 const worldElem = document.querySelector("[data-world]");
 
 let nextCactusTime;
@@ -129,7 +131,7 @@ function shouldSpawnHeart(finishTimerElapsed) {
 function createCactus() {
   const cactus = document.createElement("img");
   cactus.dataset.cactus = true;
-  cactus.src = "imgs/cactus.png";
+  cactus.src = CACTUS_SRC;
   cactus.classList.add("cactus");
   setCustomProperty(cactus, "--left", 100);
   worldElem.append(cactus);
@@ -138,7 +140,7 @@ function createCactus() {
 function createHeart() {
   const heart = document.createElement("img");
   heart.dataset.heart = true;
-  heart.src = "imgs/heart.png";
+  heart.src = HEART_SRC;
   heart.classList.add("heart");
   setCustomProperty(heart, "--left", 100);
   worldElem.append(heart);

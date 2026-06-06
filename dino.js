@@ -16,19 +16,31 @@ const MOBILE_DINO_START_LEFT = 3;
 const FINISH_RUN_SPEED = 0.03;
 const MOBILE_FINISH_RUN_SPEED = 0.08;
 const MOBILE_BREAKPOINT = 700;
+const DINO_STATIONARY_SRC = new URL("./imgs/dino-stationary.png", import.meta.url)
+  .href;
+const DINO_RUN_SRCS = [
+  new URL("./imgs/dino-run-0.png", import.meta.url).href,
+  new URL("./imgs/dino-run-1.png", import.meta.url).href,
+];
+const DINO_JUMP_SRC = new URL("./imgs/dino-jump.png", import.meta.url).href;
+const DINO_LOSE_SRC = new URL("./imgs/dino-lose.png", import.meta.url).href;
+const DINO_FINISH_SRC = new URL("./imgs/finish.png", import.meta.url).href;
 
 let isJumping;
 let dinoFrame;
 let currentFrameTime;
 let yVelocity;
 let isFinishingRun;
+
+preloadDinoSprites();
+
 export function setupDino() {
   isJumping = false;
   isFinishingRun = false;
   dinoFrame = 0;
   currentFrameTime = 0;
   yVelocity = 0;
-  dinoElem.src = "imgs/dino-stationary.png";
+  dinoElem.src = DINO_STATIONARY_SRC;
   dinoElem.classList.add("dino-start");
   dinoElem.classList.remove("dino-finish");
   setCustomProperty(dinoElem, "--left", getDinoStartLeft());
@@ -46,13 +58,13 @@ export function getDinoRect() {
 }
 
 export function setDinoLose() {
-  dinoElem.src = "imgs/dino-lose.png";
+  dinoElem.src = DINO_LOSE_SRC;
 }
 
 export function setDinoFinish() {
   dinoElem.classList.remove("dino-start");
   dinoElem.classList.add("dino-finish");
-  dinoElem.src = "imgs/finish.png";
+  dinoElem.src = DINO_FINISH_SRC;
 }
 
 export function stopDino() {
@@ -71,25 +83,25 @@ export function requestJump() {
   currentFrameTime = 0;
   dinoElem.classList.remove("dino-start");
   dinoElem.classList.remove("dino-finish");
-  dinoElem.src = "imgs/dino-jump.png";
+  dinoElem.src = DINO_JUMP_SRC;
 }
 
 function handleRun(delta, speedScale) {
   if (isJumping) {
     dinoElem.classList.remove("dino-start");
     dinoElem.classList.remove("dino-finish");
-    dinoElem.src = "imgs/dino-jump.png";
+    dinoElem.src = DINO_JUMP_SRC;
     return;
   }
 
   dinoElem.classList.remove("dino-start");
   dinoElem.classList.remove("dino-finish");
-  if (!dinoElem.src.includes(`dino-run-${dinoFrame}.png`)) {
-    dinoElem.src = `imgs/dino-run-${dinoFrame}.png`;
+  if (dinoElem.src !== DINO_RUN_SRCS[dinoFrame]) {
+    dinoElem.src = DINO_RUN_SRCS[dinoFrame];
   }
   if (currentFrameTime >= FRAME_TIME) {
     dinoFrame = (dinoFrame + 1) % DINO_FRAME_COUNT;
-    dinoElem.src = `imgs/dino-run-${dinoFrame}.png`;
+    dinoElem.src = DINO_RUN_SRCS[dinoFrame];
     currentFrameTime -= FRAME_TIME;
   }
   currentFrameTime += delta * speedScale;
@@ -105,7 +117,7 @@ function handleJump(delta) {
     isJumping = false;
     dinoFrame = 0;
     currentFrameTime = 0;
-    dinoElem.src = `imgs/dino-run-${dinoFrame}.png`;
+    dinoElem.src = DINO_RUN_SRCS[dinoFrame];
   }
 
   yVelocity -= getGravity() * delta;
@@ -135,4 +147,17 @@ function getDinoStartLeft() {
   return window.innerWidth <= MOBILE_BREAKPOINT
     ? MOBILE_DINO_START_LEFT
     : DINO_START_LEFT;
+}
+
+function preloadDinoSprites() {
+  [
+    DINO_STATIONARY_SRC,
+    DINO_JUMP_SRC,
+    DINO_LOSE_SRC,
+    DINO_FINISH_SRC,
+    ...DINO_RUN_SRCS,
+  ].forEach((src) => {
+    const image = new Image();
+    image.src = src;
+  });
 }

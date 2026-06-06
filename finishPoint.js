@@ -8,6 +8,7 @@ const SPEED = 0.05;
 const FINISH_DELAY = 10000;
 const MOBILE_BREAKPOINT = 700;
 const MOBILE_SCROLL_MULTIPLIER = 1.5;
+const FINISH_POINT_SRC = new URL("./imgs/finish-point.png", import.meta.url).href;
 const worldElem = document.querySelector("[data-world]");
 
 let finishPointElem;
@@ -83,7 +84,7 @@ export function removeFinishPoint() {
 function createFinishPoint() {
   finishPointElem = document.createElement("img");
   finishPointElem.dataset.finishPoint = true;
-  finishPointElem.src = "imgs/finish-point.png";
+  finishPointElem.src = FINISH_POINT_SRC;
   finishPointElem.classList.add("finish-point");
   setCustomProperty(finishPointElem, "--left", 100);
   worldElem.append(finishPointElem);
