@@ -68,6 +68,10 @@ export function requestJump() {
 
   yVelocity = getJumpSpeed();
   isJumping = true;
+  currentFrameTime = 0;
+  dinoElem.classList.remove("dino-start");
+  dinoElem.classList.remove("dino-finish");
+  dinoElem.src = "imgs/dino-jump.png";
 }
 
 function handleRun(delta, speedScale) {
@@ -80,6 +84,9 @@ function handleRun(delta, speedScale) {
 
   dinoElem.classList.remove("dino-start");
   dinoElem.classList.remove("dino-finish");
+  if (!dinoElem.src.includes(`dino-run-${dinoFrame}.png`)) {
+    dinoElem.src = `imgs/dino-run-${dinoFrame}.png`;
+  }
   if (currentFrameTime >= FRAME_TIME) {
     dinoFrame = (dinoFrame + 1) % DINO_FRAME_COUNT;
     dinoElem.src = `imgs/dino-run-${dinoFrame}.png`;
@@ -96,6 +103,9 @@ function handleJump(delta) {
   if (getCustomProperty(dinoElem, "--bottom") <= 0) {
     setCustomProperty(dinoElem, "--bottom", 0);
     isJumping = false;
+    dinoFrame = 0;
+    currentFrameTime = 0;
+    dinoElem.src = `imgs/dino-run-${dinoFrame}.png`;
   }
 
   yVelocity -= getGravity() * delta;
