@@ -269,48 +269,32 @@ body {
     --cactus-height: 12%;
     --heart-height: 9%;
     --heart-top: 14%;
+    padding-top: 25vh;
   }
 
   .start-screen {
-    top: 9%;
-    font-size: 1rem;
-    width: calc(100% - 1rem);
+    top: 25vh;
+    font-size: 5vmin;
+    width: calc(100% - 1.6rem);
     text-align: center;
+    transform: translateX(-50%);
   }
 
   .lose-screen,
   .finish-screen {
-    top: 0.4rem;
-    width: min(64vw, 240px);
-    min-height: 2.1rem;
-    border-radius: 12px;
-    padding: 0.22rem 0.48rem;
+    top: 25vh;
+    width: min(520px, calc(100% - 1.6rem));
+    min-height: 4.2rem;
+    border-radius: 22px;
+    padding: 0.55rem 1rem;
   }
 
   .lose-screen {
-    top: 0.4rem;
+    top: 25vh;
   }
 
   .finish-screen {
-    top: 0.4rem;
-  }
-
-  .lose-screen__title {
-    font-size: clamp(0.72rem, 3.2vw, 0.9rem);
-  }
-
-  .lose-screen__action {
-    min-width: 4.2rem;
-    padding: 0.2rem 0.46rem;
-    font-size: 0.56rem;
-  }
-
-  .finish-screen__title {
-    font-size: clamp(0.82rem, 4vw, 1rem);
-  }
-
-  .finish-screen__title::after {
-    width: min(16vw, 46px);
+    top: 25vh;
   }
 
   .dino-finish {

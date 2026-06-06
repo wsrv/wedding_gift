@@ -44,7 +44,7 @@ window.addEventListener("resize", setPixelToWorldScale);
 document.addEventListener("keydown", handlePrimaryInput);
 document.addEventListener("pointerdown", handlePrimaryInput, { passive: false });
 loseScreenElem.addEventListener("click", handleStart);
-finishScreenElem.addEventListener("click", handleStart);
+finishScreenElem.addEventListener("click", handleReturnToStart);
 
 let lastTime;
 let speedScale;
@@ -52,6 +52,8 @@ let gameState = "idle";
 let isGameFinished;
 let hasStartedFinishRun;
 let isGroundStopped;
+
+showStartState();
 
 function update(time) {
   if (lastTime == null) {
@@ -141,6 +143,28 @@ function handleStart() {
   setupFinishPoint();
   startScreenElem.classList.add("hide");
   window.requestAnimationFrame(update);
+}
+
+function handleReturnToStart(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  showStartState();
+}
+
+function showStartState() {
+  lastTime = null;
+  speedScale = 1;
+  gameState = "idle";
+  isGameFinished = false;
+  hasStartedFinishRun = false;
+  isGroundStopped = false;
+  loseScreenElem.classList.add("hide");
+  finishScreenElem.classList.add("hide");
+  setupGround();
+  setupDino();
+  setupCactus();
+  setupFinishPoint();
+  startScreenElem.classList.remove("hide");
 }
 
 function handleLose() {
